@@ -210,24 +210,24 @@ saveRDS(dadaFsPooled, "dadaFsPooled.rds") ; saveRDS(dadaRsPooled, "dadaRsPooled.
 #   Initial merge to compute overlap lengths (set maxMismatch to infinity)
 mergers_w_rejects <- mergePairs(dadaFsPooled, filtFs, dadaRsPooled, filtRs, 
                                 verbose=TRUE, maxMismatch = Inf)
-# Total overlap length is calculated as: mismatches in overlap region + 
-#   matches in overlap region
-#   First we extract count for all mismatches to compute total overlap length
-merge_mismatches <- lapply(mergers_w_rejects, "[[", 6) 
-#   Then extract count for all mismatches
-merge_matches <- lapply(mergers_w_rejects, "[[", 5)
 
-# Merge with specified mismatch cutoff of 1.5%
-#   First compute overlap length
-total_overlap_lengths <- Map("+", merge_mismatches, merge_matches)
 # Create empty vector to contain merged reads by sample
 mergers <- vector("list", length(mergers_w_rejects)) 
 names(mergers) <- sample.names #  Name samples
-# Populate the empty vector with samples containing merged reads
+
 for (i in c(1:length(mergers_w_rejects))) {
-	mergers[[i]] <- mergePairs(dadaFsPooled[[i]], filtFs[[i]], dadaRsPooled[[i]], 
-	                           filtRs[[i]], verbose=T, maxMismatch = 
-	                             overlap_mismatch_proportion*total_overlap_lengths[[i]])}
+  mergers_w_rejects[[i]]$length <- nchar(mergers_w_rejects[[i]]$sequence)
+  #mergers_w_rejects[[i]]$percent_mismatch <- 
+  #  (mergers_w_rejects[[i]]$nmismatch + mergers_w_rejects[[i]]$nindel)/mergers_w_rejects[[i]]$length*100
+  
+  mergers_w_rejects[[i]]$percent_mismatch <- 
+    (mergers_w_rejects[[i]]$nmismatch)/mergers_w_rejects[[i]]$length*100
+  
+  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]] %>% filter(percent_mismatch < 1.5)
+  
+  mergers[[i]] <- mergers_w_rejects[[i]]
+  
+}
 saveRDS(mergers, "mergers.rds")
 seqtab <- makeSequenceTable(mergers) ; dim(seqtab)
 

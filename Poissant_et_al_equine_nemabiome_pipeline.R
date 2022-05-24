@@ -216,19 +216,18 @@ mergers <- vector("list", length(mergers_w_rejects))
 names(mergers) <- sample.names #  Name samples
 
 for (i in c(1:length(mergers_w_rejects))) {
-  mergers_w_rejects[[i]]$length <- nchar(mergers_w_rejects[[i]]$sequence)
-  #mergers_w_rejects[[i]]$percent_mismatch <- 
-  #  (mergers_w_rejects[[i]]$nmismatch + mergers_w_rejects[[i]]$nindel)/mergers_w_rejects[[i]]$length*100
+  mergers_w_rejects[[i]]$length <- mergers_w_rejects[[i]]$nmatch + mergers_w_rejects[[i]]$nmismatch
   
-  mergers_w_rejects[[i]]$percent_mismatch <- 
+  mergers_w_rejects[[i]]$percent_mismatch <-
     (mergers_w_rejects[[i]]$nmismatch)/mergers_w_rejects[[i]]$length*100
   
-  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]] %>% filter(percent_mismatch < 1.5)
+  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$percent_mismatch < 1.5, ]
   
-  mergers[[i]] <- mergers_w_rejects[[i]]
+  mergers_fixed[[i]] <- mergers_w_rejects[[i]]
   
 }
 saveRDS(mergers, "mergers.rds")
+rm(mergers_w_rejects)
 seqtab <- makeSequenceTable(mergers) ; dim(seqtab)
 
 # 5. Remove chimeras using pooled method

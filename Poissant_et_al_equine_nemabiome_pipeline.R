@@ -223,7 +223,7 @@ for (i in c(1:length(mergers_w_rejects))) {
   
   mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$percent_mismatch < 1.5, ]
   
-  mergers[[i]] <- mergers_w_rejects[[i]]
+  mergers_fixed[[i]] <- mergers_w_rejects[[i]]
   
 }
 saveRDS(mergers, "mergers.rds")

@@ -222,12 +222,8 @@ for (i in c(1:length(mergers_w_rejects))) {
     (mergers_w_rejects[[i]]$nmismatch + mergers_w_rejects[[i]]$nindel)/mergers_w_rejects[[i]]$length*100
   
   # First remove all ASVs below the percent cutoff
-  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$percent_mismatch < percent, ]
-  
-  # And also only keep sequences with accept = T
-  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$accept == TRUE, ]
-  
-  
+  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$percent_mismatch < 1.5, ]
+
   mergers[[i]] <- mergers_w_rejects[[i]]
   
 }

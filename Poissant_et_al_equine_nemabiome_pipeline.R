@@ -215,20 +215,24 @@ mergers_w_rejects <- mergePairs(dadaFsPooled, filtFs, dadaRsPooled, filtRs,
 mergers <- vector("list", length(mergers_w_rejects)) 
 names(mergers) <- sample.names #  Name samples
 
+# For each sample, filter out reads with % mismatches > 1.5%
 for (i in c(1:length(mergers_w_rejects))) {
+  # Compute the overlap length
   mergers_w_rejects[[i]]$length <- mergers_w_rejects[[i]]$nmatch + mergers_w_rejects[[i]]$nmismatch
   
+  # Compute % mismatch where total # of mismatches = indels + mismatches
   mergers_w_rejects[[i]]$percent_mismatch <-
     (mergers_w_rejects[[i]]$nmismatch + mergers_w_rejects[[i]]$nindel)/mergers_w_rejects[[i]]$length*100
   
   # Remove all ASVs below the percent cutoff
   mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$percent_mismatch < 1.5, ]
 
+  # Update each sample in the mergers object
   mergers[[i]] <- mergers_w_rejects[[i]]
   
 }
 saveRDS(mergers, "mergers.rds")
-rm(mergers_w_rejects)
+rm(mergers_w_rejects) # Remove this, not needed anymore
 seqtab <- makeSequenceTable(mergers) ; dim(seqtab)
 
 # 5. Remove chimeras using pooled method

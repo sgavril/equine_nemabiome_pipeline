@@ -141,7 +141,7 @@ set.seed(1)
 # and confidence threshold 
 path <- "seqs/cutadapt"
 db_path <- "Equine_Parasitic_Nematodes_Reference_Taxonomy_Database_v1.fasta"
-overlap_mismatch_proportion <- 0.015
+overlap_mismatch_percent <- 1.5
 taxonomy_confidence_threshold <- 0
 
 list.files(path)
@@ -225,7 +225,7 @@ for (i in c(1:length(mergers_w_rejects))) {
     (mergers_w_rejects[[i]]$nmismatch + mergers_w_rejects[[i]]$nindel)/mergers_w_rejects[[i]]$length*100
   
   # Remove all ASVs below the percent cutoff
-  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$percent_mismatch < 1.5, ]
+  mergers_w_rejects[[i]] <- mergers_w_rejects[[i]][mergers_w_rejects[[i]]$percent_mismatch < overlap_mismatch_percent, ]
 
   # Update each sample in the mergers object
   mergers[[i]] <- mergers_w_rejects[[i]]

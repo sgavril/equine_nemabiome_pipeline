@@ -42,7 +42,7 @@
 
 # Initialization
 rm(list=ls())
-pkgs <- c("dada2", "ShortRead", "Biostrings", "dplyr")
+pkgs <- c("dada2", "ShortRead", "Biostrings")
 lapply(pkgs, library, character.only=T, quiet=T, warn.conflicts=F)
 
 # Provide path to folder where fastq sequence files are located 
